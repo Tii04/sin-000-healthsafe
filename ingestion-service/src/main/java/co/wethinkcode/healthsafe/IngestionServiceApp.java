@@ -23,12 +23,31 @@ public class IngestionServiceApp {
             // we are going to read data line by line
             while ((nextRecord = csvReader.readNext()) != null) {
                 nextRecord[0] = nextRecord[0].toUpperCase();
-                System.out.println(nextRecord[0]);
+                nextRecord[1] = convertTitleCase(nextRecord[1].strip().replaceAll("\\s+", " "));
+                nextRecord[2] = convertTitleCase(nextRecord[2].toLowerCase());
+                System.out.println(nextRecord[2]);
             }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    private static String convertTitleCase(String text){
+        if (text == null || text.isEmpty()) return text;
+
+        StringBuilder converted = new StringBuilder();
+        boolean convertNext = true;
+        for (char ch : text.toCharArray()){
+            if (Character.isSpaceChar(ch)) convertNext = true;
+            else if (convertNext) {
+                ch = Character.toTitleCase(ch);
+                convertNext = false;
+            } else {
+                ch = Character.toLowerCase(ch);
+            }
+            converted.append(ch);
+        }
+        return converted.toString();
     }
 
     public static void main(String[] args) {
