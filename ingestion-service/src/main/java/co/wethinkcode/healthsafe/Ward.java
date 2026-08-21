@@ -42,11 +42,35 @@ public class Ward {
 
     public static List<String[]> cleanWardId(List<String[]> records){
         for(int i = 0; i < records.size(); i++){
-            String wardId = records.get(i)[0];
-            wardId = wardId.strip().toUpperCase();
+            String wardId = records.get(i)[0].strip().toUpperCase();
             records.get(i)[0] = wardId;
         }
         return records;
+    }
+
+    public static List<String[]> cleanWing(List<String[]>records){
+        for(int i = 0; i < records.size(); i++){
+            String wing = convertTitleCase(records.get(i)[1].strip().replaceAll("\\s+", " "));
+            records.get(i)[1] = wing;
+        }
+        return records;
+    }
+    private static String convertTitleCase(String text){
+        if (text == null || text.isEmpty()) return text;
+
+        StringBuilder converted = new StringBuilder();
+        boolean convertNext = true;
+        for (char ch : text.toCharArray()){
+            if (Character.isSpaceChar(ch)) convertNext = true;
+            else if (convertNext) {
+                ch = Character.toTitleCase(ch);
+                convertNext = false;
+            } else {
+                ch = Character.toLowerCase(ch);
+            }
+            converted.append(ch);
+        }
+        return converted.toString();
     }
 
     public static void main(String[] args){
