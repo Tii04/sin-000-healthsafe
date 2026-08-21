@@ -49,7 +49,41 @@ public class Ward {
         return records;
     }
 
+    public static List<String[]> cleanWing(List<String[]> records){
+        for (int i = 0; i < records.size(); i++){
+            String wing = convertTitleCase(records.get(i)[1].strip().replaceAll("\\s+", " "));
+            records.get(i)[1] = wing;
+        }
+        return records;
+    }
+
+    public static List<String[]> cleanDepartment(List<String[]> records){
+        for (int i = 0; i < records.size(); i++){
+            String department = records.get(i)[2];
+        }
+        return records;
+    }
+
+    private static String convertTitleCase(String text){
+        if (text == null || text.isEmpty()) return text;
+
+        StringBuilder converted = new StringBuilder();
+        boolean convertNext = true;
+        for (char ch : text.toCharArray()){
+            if (Character.isSpaceChar(ch)) convertNext = true;
+            else if (convertNext) {
+                ch = Character.toTitleCase(ch);
+                convertNext = false;
+            } else {
+                ch = Character.toLowerCase(ch);
+            }
+            converted.append(ch);
+        }
+        return converted.toString();
+    }
+
+
     public static void main(String[] args){
-        cleanWardId(readCsv("src/main/resources/wards-outdated.csv"));
+        cleanWing(cleanWardId(readCsv("src/main/resources/wards-outdated.csv")));
     }
 }
