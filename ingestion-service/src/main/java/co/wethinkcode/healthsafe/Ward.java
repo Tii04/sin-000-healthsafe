@@ -42,28 +42,19 @@ public class Ward {
 
     public static List<String[]> cleanWardId(List<String[]> records){
         for(int i = 0; i < records.size(); i++){
-            String wardId = records.get(i)[0];
-            wardId = wardId.strip().toUpperCase();
+            String wardId = records.get(i)[0].strip().toUpperCase();
             records.get(i)[0] = wardId;
         }
         return records;
     }
 
-    public static List<String[]> cleanWing(List<String[]> records){
-        for (int i = 0; i < records.size(); i++){
+    public static List<String[]> cleanWing(List<String[]>records){
+        for(int i = 0; i < records.size(); i++){
             String wing = convertTitleCase(records.get(i)[1].strip().replaceAll("\\s+", " "));
             records.get(i)[1] = wing;
         }
         return records;
     }
-
-    public static List<String[]> cleanDepartment(List<String[]> records){
-        for (int i = 0; i < records.size(); i++){
-            String department = records.get(i)[2];
-        }
-        return records;
-    }
-
     private static String convertTitleCase(String text){
         if (text == null || text.isEmpty()) return text;
 
@@ -82,8 +73,7 @@ public class Ward {
         return converted.toString();
     }
 
-
     public static void main(String[] args){
-        cleanWing(cleanWardId(readCsv("src/main/resources/wards-outdated.csv")));
+        cleanWardId(readCsv("src/main/resources/wards-outdated.csv"));
     }
 }
