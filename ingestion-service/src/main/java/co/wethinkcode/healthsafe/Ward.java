@@ -4,13 +4,21 @@ import com.opencsv.CSVReader;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Ward {
     private String wardId;
     private String wing;
     private String department;
-    private int bedsAvailable;
+    private Integer bedsAvailable;
+
+    public Ward(String wardId, String wing, String department, int bedsAvailable){
+        this.wardId = wardId;
+        this.wing = wing;
+        this.department = department;
+        bedsAvailable = bedsAvailable;
+    }
 
     public static List<String[]> readCsv(String file){
         List<String[]> readRecords = new ArrayList<>();
@@ -51,9 +59,66 @@ public class Ward {
     public static List<String[]> cleanWing(List<String[]>records){
         for(int i = 0; i < records.size(); i++){
             String wing = convertTitleCase(records.get(i)[1].strip().replaceAll("\\s+", " "));
-            records.get(i)[1] = wing;
+            records.get(i)[1] = cleanMissingValues(wing);
         }
         return records;
+    }
+     public static List<String[]> cleanDepartment(List<String[]>records){
+         for (String[] record : records) {
+             String department = convertTitleCase(record[2].strip().replaceAll("\\s+", " "));
+             record[2] = cleanMissingValues(department);
+         }
+         return records;
+     }
+
+     public static List<String[]> cleanBedsAvailable(List<String[]> records){
+         for (String[] record : records) {
+             String bedsAvailable = String.valueOf(record[3].strip().replaceAll("\\s+", " "));
+             record[3] = String.valueOf(cleanBedsAvailable(bedsAvailable));
+         }
+         return records;
+     }
+
+    private static String cleanMissingValues(String recordValue){
+        String[] invalidInput = {"N/A", "TBD", "-", "NaN", "unknown"};
+        if (recordValue == null) {
+            return null;
+        }
+
+        String value = recordValue.strip();
+
+        if (value.isEmpty()
+                || value.equalsIgnoreCase("N/A")
+                || value.equalsIgnoreCase("TBD")
+                || value.equals("-")
+                || value.equalsIgnoreCase("NaN")
+                || value.equalsIgnoreCase("unknown")) {
+            return null;
+        }
+        return value;
+    }
+
+    private static Integer cleanBedsAvailable(String recordValue) {
+        String value = cleanMissingValues(recordValue);
+
+        if (value == null) {
+            return null;
+        }
+        if (value.equalsIgnoreCase("full")) {
+            return 0;
+        }
+
+        try {
+            int beds = Integer.parseInt(value);
+
+            if (beds < 0 || beds > 1000) {
+                return null;
+            }
+            return beds;
+
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
     private static String convertTitleCase(String text){
         if (text == null || text.isEmpty()) return text;
@@ -74,6 +139,9 @@ public class Ward {
     }
 
     public static void main(String[] args){
-        cleanWardId(readCsv("src/main/resources/wards-outdated.csv"));
+        List<String[]> records = cleanBedsAvailable(cleanDepartment(cleanWing(cleanWardId(readCsv("src/main/resources/wards-outdated.csv")))));
+        for (String[] record : records){
+            System.out.println(Arrays.toString(record));
+        }
     }
 }
