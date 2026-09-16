@@ -3,9 +3,7 @@ package co.wethinkcode.healthsafe;
 import com.opencsv.CSVReader;
 
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Ward {
     private String wardId;
@@ -13,11 +11,11 @@ public class Ward {
     private String department;
     private Integer bedsAvailable;
 
-    public Ward(String wardId, String wing, String department, int bedsAvailable){
+    public Ward(String wardId, String wing, String department, Integer bedsAvailable){
         this.wardId = wardId;
         this.wing = wing;
         this.department = department;
-        bedsAvailable = bedsAvailable;
+        this.bedsAvailable = bedsAvailable;
     }
 
     public static List<String[]> readCsv(String file){
@@ -51,7 +49,7 @@ public class Ward {
     public static List<String[]> cleanWardId(List<String[]> records){
         for(int i = 0; i < records.size(); i++){
             String wardId = records.get(i)[0].strip().toUpperCase();
-            records.get(i)[0] = wardId;
+            records.get(i)[0] = cleanMissingValues(wardId);
         }
         return records;
     }
@@ -80,7 +78,6 @@ public class Ward {
      }
 
     private static String cleanMissingValues(String recordValue){
-        String[] invalidInput = {"N/A", "TBD", "-", "NaN", "unknown"};
         if (recordValue == null) {
             return null;
         }
@@ -138,8 +135,31 @@ public class Ward {
         return converted.toString();
     }
 
+    public static List<String[]> handleDuplicates(List<String[]> records){
+        Set<String> seenWardIds = new HashSet<>();
+        List<String[]> uniqueRecords = new ArrayList<>();
+
+        for (String[] record : records){
+            String wardId = record[0];
+
+            if (seenWardIds.contains(wardId)){
+                continue;
+            }
+            seenWardIds.add(wardId);
+            uniqueRecords.add(record);
+        }
+        return uniqueRecords;
+    }
+
     public static void main(String[] args){
-        List<String[]> records = cleanBedsAvailable(cleanDepartment(cleanWing(cleanWardId(readCsv("src/main/resources/wards-outdated.csv")))));
+        List<String[]> records = readCsv("src/main/resources/wards-outdated.csv");
+
+        records = cleanWardId(records);
+        records = cleanWing(records);
+        records = cleanDepartment(records);
+        records = cleanBedsAvailable(records);
+        records = handleDuplicates(records);
+
         for (String[] record : records){
             System.out.println(Arrays.toString(record));
         }
