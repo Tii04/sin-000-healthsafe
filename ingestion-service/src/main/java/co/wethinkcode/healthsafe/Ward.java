@@ -26,4 +26,14 @@ public class Ward {
     public Integer getBedsAvailable(){
         return bedsAvailable;
     }
+
+    @Override
+    public String toString(){
+        return "Ward{" +
+                "wardId='" + wardId + '\'' +
+                ", wing='" + wing + '\'' +
+                ", department='" + department + '\'' +
+                ", bedsAvailable=" + bedsAvailable +
+                '}';
+    }
 }
