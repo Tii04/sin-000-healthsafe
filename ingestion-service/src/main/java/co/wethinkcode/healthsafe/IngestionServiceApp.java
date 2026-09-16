@@ -37,7 +37,7 @@ public class IngestionServiceApp {
     }
 
     public static List<String[]> cleanWardId(List<String[]> records){
-        for(int i = 0; i < records.size(); i++){
+        for(int i = 1; i <= records.size() -1; i++){
             String wardId = records.get(i)[0].strip().toUpperCase();
             records.get(i)[0] = cleanMissingValues(wardId);
         }
@@ -45,24 +45,25 @@ public class IngestionServiceApp {
     }
 
     public static List<String[]> cleanWing(List<String[]>records){
-        for(int i = 0; i < records.size(); i++){
+        for(int i = 1; i <= records.size() -1; i++){
             String wing = convertTitleCase(records.get(i)[1].strip().replaceAll("\\s+", " "));
             records.get(i)[1] = cleanMissingValues(wing);
         }
         return records;
     }
     public static List<String[]> cleanDepartment(List<String[]>records){
-        for (String[] record : records) {
-            String department = convertTitleCase(record[2].strip().replaceAll("\\s+", " "));
-            record[2] = cleanMissingValues(department);
+        for (int i = 1; i <= records.size() -1; i++) {
+            String department = convertTitleCase(records.get(i)[2].strip().replaceAll("\\s+", " "));
+            records.get(i)[2] = cleanMissingValues(department);
         }
         return records;
     }
 
     public static List<String[]> cleanBedsAvailable(List<String[]> records){
-        for (String[] record : records) {
-            String bedsAvailable = String.valueOf(record[3].strip().replaceAll("\\s+", " "));
-            record[3] = String.valueOf(cleanBedsAvailable(bedsAvailable));
+        for (int i = 1; i <= records.size() -1; i++) {
+            String bedsAvailable = String.valueOf(records.get(i)[3].strip().replaceAll("\\s+", " "));
+            Integer cleanedBeds = cleanBedsAvailable(bedsAvailable);
+            records.get(i)[3] = cleanedBeds == null ? null : String.valueOf(cleanedBeds);
         }
         return records;
     }
@@ -140,6 +141,20 @@ public class IngestionServiceApp {
         }
         return uniqueRecords;
     }
+    public static List<Ward> createWards(List<String[]> records){
+        List<Ward> wards = new ArrayList<>();
+        for (int i = 1; i <= records.size() -1; i++){
+            String wardId = records.get(i)[0];
+            String wing = records.get(i)[1];
+            String department = records.get(i)[2];
+            Integer bedsAvailable = records.get(i)[3] == null ? null : Integer.valueOf(records.get(i)[3]);
+
+            Ward ward = new Ward(wardId, wing, department, bedsAvailable);
+
+            wards.add(ward);
+        }
+        return wards;
+    }
 
     public static void main(String[] args) {
         Javalin app = Javalin.create().start(7030);
@@ -157,8 +172,10 @@ public class IngestionServiceApp {
         records = cleanBedsAvailable(records);
         records = handleDuplicates(records);
 
-        for (String[] record : records){
-            System.out.println(Arrays.toString(record));
+        List<Ward> wards = createWards(records);
+
+        for (Ward ward : wards){
+            System.out.println(ward.toString());
         }
 
     }
