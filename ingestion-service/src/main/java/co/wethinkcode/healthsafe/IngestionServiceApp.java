@@ -53,15 +53,14 @@ public class IngestionServiceApp {
     }
     public static List<String[]> cleanDepartment(List<String[]>records){
         for (int i = 1; i <= records.size() -1; i++) {
-            String department = convertTitleCase(records.get(i)[2].strip().replaceAll("\\s+", " "));
-            records.get(i)[2] = normaliseDepartment(department);
+            records.get(i)[2] = normaliseDepartment(records.get(i)[2]);
         }
         return records;
     }
 
     public static List<String[]> cleanBedsAvailable(List<String[]> records){
         for (int i = 1; i <= records.size() -1; i++) {
-            String bedsAvailable = records.get(i)[3].strip().replaceAll("\\s+", " ");
+            String bedsAvailable = records.get(i)[3] == null ? null : records.get(i)[3].strip().replaceAll("\\s+", " ");
             Integer cleanedBeds = cleanBedsAvailable(bedsAvailable);
             records.get(i)[3] = cleanedBeds == null ? null : String.valueOf(cleanedBeds);
         }
@@ -141,6 +140,16 @@ public class IngestionServiceApp {
         }
         return uniqueRecords;
     }
+
+    public static List<String[]> cleanAll(List<String[]> records){
+        records = cleanWardId(records);
+        records = cleanWing(records);
+        records = cleanDepartment(records);
+        records = cleanBedsAvailable(records);
+        records = handleDuplicates(records);
+
+        return records;
+    }
     public static List<Ward> createWards(List<String[]> records){
         List<Ward> wards = new ArrayList<>();
         for (int i = 1; i <= records.size() -1; i++){
@@ -180,11 +189,7 @@ public class IngestionServiceApp {
         // cleaned records here for the other services to consume.
         List<String[]> records = readCsv("src/main/resources/wards-outdated.csv");
 
-        records = cleanWardId(records);
-        records = cleanWing(records);
-        records = cleanDepartment(records);
-        records = cleanBedsAvailable(records);
-        records = handleDuplicates(records);
+       cleanAll(records);
 
         List<Ward> wards = createWards(records);
 
