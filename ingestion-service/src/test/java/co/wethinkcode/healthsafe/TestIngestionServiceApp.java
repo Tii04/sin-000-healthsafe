@@ -10,8 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class TestIngestionServiceApp {
 
     List<String[]> records = IngestionServiceApp.readCsv("src/main/resources/wards-outdated.csv");
-    List<String[]> cleanedRecords = IngestionServiceApp.cleanAll(records);
-    List<Ward> ward = IngestionServiceApp.createWards(cleanedRecords);
+    List<Ward> ward = IngestionServiceApp.createWards(records);
 
     @Test
     public void wardIdCapitalised(){
@@ -34,6 +33,7 @@ public class TestIngestionServiceApp {
     @Test
     public void normalisationDepartmentOfDifferentSpelling(){
         String misspelledWord = "PAEDIATRICS";
+        List<String[]> cleanedRecords = IngestionServiceApp.cleanAll(records);
 
         cleanedRecords.get(16)[2] = misspelledWord;
         IngestionServiceApp.cleanDepartment(cleanedRecords);
