@@ -46,7 +46,7 @@ public class IngestionServiceApp {
 
     public static List<String[]> cleanWing(List<String[]>records){
         for(int i = 1; i <= records.size() -1; i++){
-            String wing = convertTitleCase(records.get(i)[1].strip().replaceAll("\\s+", " "));
+            String wing = records.get(i)[1] == null ? null : convertTitleCase(records.get(i)[1].strip().replaceAll("\\s+", " "));
             records.get(i)[1] = cleanMissingValues(wing);
         }
         return records;
@@ -151,12 +151,14 @@ public class IngestionServiceApp {
         return records;
     }
     public static List<Ward> createWards(List<String[]> records){
+        List <String[]> newRecords = new ArrayList<>(cleanAll(records));
         List<Ward> wards = new ArrayList<>();
-        for (int i = 1; i <= records.size() -1; i++){
-            String wardId = records.get(i)[0];
-            String wing = records.get(i)[1];
-            String department = records.get(i)[2];
-            Integer bedsAvailable = records.get(i)[3] == null ? null : Integer.valueOf(records.get(i)[3]);
+
+        for (int i = 1; i <= newRecords.size() -1; i++){
+            String wardId = newRecords.get(i)[0];
+            String wing = newRecords.get(i)[1];
+            String department = newRecords.get(i)[2];
+            Integer bedsAvailable = newRecords.get(i)[3] == null ? null : Integer.valueOf(newRecords.get(i)[3]);
 
             Ward ward = new Ward(wardId, wing, department, bedsAvailable);
 
@@ -188,8 +190,6 @@ public class IngestionServiceApp {
         // trim whitespace, fix casing, normalize dates/booleans) and expose the
         // cleaned records here for the other services to consume.
         List<String[]> records = readCsv("src/main/resources/wards-outdated.csv");
-
-       cleanAll(records);
 
         List<Ward> wards = createWards(records);
 
