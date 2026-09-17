@@ -54,14 +54,14 @@ public class IngestionServiceApp {
     public static List<String[]> cleanDepartment(List<String[]>records){
         for (int i = 1; i <= records.size() -1; i++) {
             String department = convertTitleCase(records.get(i)[2].strip().replaceAll("\\s+", " "));
-            records.get(i)[2] = cleanMissingValues(department);
+            records.get(i)[2] = normaliseDepartment(department);
         }
         return records;
     }
 
     public static List<String[]> cleanBedsAvailable(List<String[]> records){
         for (int i = 1; i <= records.size() -1; i++) {
-            String bedsAvailable = String.valueOf(records.get(i)[3].strip().replaceAll("\\s+", " "));
+            String bedsAvailable = records.get(i)[3].strip().replaceAll("\\s+", " ");
             Integer cleanedBeds = cleanBedsAvailable(bedsAvailable);
             records.get(i)[3] = cleanedBeds == null ? null : String.valueOf(cleanedBeds);
         }
@@ -154,6 +154,20 @@ public class IngestionServiceApp {
             wards.add(ward);
         }
         return wards;
+    }
+
+    private static String normaliseDepartment(String department){
+        String value = cleanMissingValues(department);
+
+        if (value == null) return null;
+
+        value = value.strip().replaceAll("\\s+", " ");
+
+        if (value.equalsIgnoreCase("pediatrics") || value.equalsIgnoreCase("paediatrics")){
+            return "Pediatrics";
+        }
+
+        return convertTitleCase(value);
     }
 
     public static void main(String[] args) {
