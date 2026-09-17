@@ -182,20 +182,19 @@ public class IngestionServiceApp {
     }
 
     public static void main(String[] args) {
-        Javalin app = Javalin.create().start(7030);
-
-        app.get("/health", ctx -> ctx.result("OK"));
-
-        // TODO: read and clean src/main/resources/wards-outdated.csv (wards, wings, specialist departments data —
-        // trim whitespace, fix casing, normalize dates/booleans) and expose the
-        // cleaned records here for the other services to consume.
         List<String[]> records = readCsv("src/main/resources/wards-outdated.csv");
 
         List<Ward> wards = createWards(records);
 
-        for (Ward ward : wards){
-            System.out.println(ward.toString());
-        }
+        Javalin app = Javalin.create().start(7030);
+
+        app.get("/health", ctx -> ctx.result("OK"));
+        app.get("/wards", ctx -> ctx.json(wards));
+
+        // TODO: read and clean src/main/resources/wards-outdated.csv (wards, wings, specialist departments data —
+        // trim whitespace, fix casing, normalize dates/booleans) and expose the
+        // cleaned records here for the other services to consume.
+
 
     }
 }
