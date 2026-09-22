@@ -49,12 +49,7 @@ public class WardServiceApp {
         app.get("/ward/{id}", ctx -> {
             List<Ward> wards = getWardsFromIngestionService();
             String wardId = ctx.pathParam("id").toLowerCase();
-            for (Ward ward : wards){
-                if (Objects.equals(ward.getWardId().toLowerCase(), wardId)){
-                    ctx.json(ward);
-                    return;
-                }
-            }
+            wards.stream().filter(ward -> ward.getWardId().equalsIgnoreCase(wardId)).findFirst().ifPresentOrElse(ctx ::json, () -> ctx.status(404));
         });
         app.get("/departments", ctx -> {
             List<Ward> wards = getWardsFromIngestionService();
