@@ -11,6 +11,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class WardServiceApp {
 
@@ -43,6 +45,16 @@ public class WardServiceApp {
         app.get("/wards", ctx -> {
             List<Ward> wards = getWardsFromIngestionService();
             ctx.json(wards);
+        });
+        app.get("/ward/{id}", ctx -> {
+            List<Ward> wards = getWardsFromIngestionService();
+            String wardId = ctx.pathParam("id").toLowerCase();
+            for (Ward ward : wards){
+                if (Objects.equals(ward.getWardId().toLowerCase(), wardId)){
+                    ctx.json(ward);
+                    return;
+                }
+            }
         });
         app.get("/departments", ctx -> {
             List<Ward> wards = getWardsFromIngestionService();
