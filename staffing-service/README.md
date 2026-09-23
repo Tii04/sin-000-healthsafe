@@ -14,6 +14,9 @@ REST: calls `ward-service` (`../ward-service`) to validate the ward and
 Status before computing a schedule — see [Integration contracts](../README.md#integration-contracts)
 in the root README for the endpoint shapes.
 
+## Assumption Decisions
+The specification does not define the staffing calculation. Therefore, this implementation assumes that the number of doctors required increases with the emergency level: levels 0-2 require one doctor, 3-5 two, 6-7 three and level 8 requires four.
+
 ## Project structure
 
 ```
