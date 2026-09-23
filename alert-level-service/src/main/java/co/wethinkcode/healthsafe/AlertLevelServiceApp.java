@@ -15,7 +15,6 @@ public class AlertLevelServiceApp {
     public static void main(String[] args) {
         AlertLevel currentAlertLevel = new AlertLevel();
         ObjectMapper mapper = new ObjectMapper();
-        currentAlertLevel.setLevel(8);
 
         Javalin app = Javalin.create().start(7032);
 
