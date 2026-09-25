@@ -2,7 +2,6 @@ package co.wethinkcode.healthsafe.mq;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import co.wethinkcode.healthsafe.StaffingSchedule;
