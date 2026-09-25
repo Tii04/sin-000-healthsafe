@@ -1,6 +1,8 @@
 package co.wethinkcode.healthsafe;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import co.wethinkcode.healthsafe.mq.StaffingEventPublisher;
 import io.javalin.Javalin;
 
 import java.io.IOException;
@@ -8,11 +10,23 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class StaffingServiceApp {
     private static final HttpClient CLIENT = HttpClient.newHttpClient();
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final Map<String, StaffingSchedule> previousSchedules = new HashMap<>();
+    private static final StaffingEventPublisher publisher;
+
+    static {
+        try {
+            publisher = new StaffingEventPublisher();
+        } catch (Exception e){
+            throw new RuntimeException("Failed to initialise StaffingEventPublisher", e);
+        }
+    }
 
     public static Optional<Ward> getWardFromWardService(String id){
 
@@ -71,8 +85,19 @@ public class StaffingServiceApp {
         return new StaffingSchedule(ward.getWardId(), ward.getDepartment(), level, doctorsRequired);
     }
 
+    public static void compareSchedules(StaffingSchedule prevSchedule, StaffingSchedule currSchedule) throws Exception{
+        if (prevSchedule == null){
+            publisher.publish(currSchedule);
+        } else if (!prevSchedule.equals(currSchedule)){
+            publisher.publish(currSchedule);
+        }
+        
+        previousSchedules.put(currSchedule.getWardId(), currSchedule);
+    }
+
     public static void main(String[] args) {
         Javalin app = Javalin.create().start(7033);
+        
 
         app.get("/health", ctx -> ctx.result("OK"));
         app.get("/staffing/{id}", ctx -> {
@@ -85,8 +110,11 @@ public class StaffingServiceApp {
             }
 
             AlertLevel alertLevel = getAlertLevelFromAlertLevelService();
-            StaffingSchedule schedule = calculateSchedule(ward.get(), alertLevel);
-            ctx.json(schedule);
+            StaffingSchedule currentSchedule = calculateSchedule(ward.get(), alertLevel);
+            StaffingSchedule prevSchedule = previousSchedules.get(currentSchedule.getWardId());
+
+            compareSchedules(prevSchedule, currentSchedule);
+            ctx.json(currentSchedule);
         });
 
 
