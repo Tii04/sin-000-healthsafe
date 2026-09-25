@@ -26,11 +26,23 @@ The trade-off is that schedule changes are not detected or published immediately
 
 ```
 staffing-service/
+├── README.md
+├── dependency-reduced-pom.xml
 ├── pom.xml
-└── src/main/java/co/wethinkcode/healthsafe/
-    ├── StaffingServiceApp.java
-    └── mq/
-        └── MqConfig.java
+├── src
+│   └── main
+│       └── java
+│           └── co
+│               └── wethinkcode
+│                   └── healthsafe
+│                       ├── AlertLevel.java
+│                       ├── StaffingSchedule.java
+│                       ├── StaffingServiceApp.java
+│                       ├── Ward.java
+│                       ├── healthsafe.iml
+│                       └── mq
+│                           ├── MqConfig.java
+│                           └── StaffingEventPublisher.java
 ```
 
 ## Build

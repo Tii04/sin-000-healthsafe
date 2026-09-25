@@ -62,10 +62,20 @@ out for (and handle) at least:
 
 ```
 ingestion-service/
+├── README.md
+├── dependency-reduced-pom.xml
 ├── pom.xml
-└── src/main/
-    ├── java/co/wethinkcode/healthsafe/IngestionServiceApp.java
-    └── resources/wards-outdated.csv
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── co
+│   │   │       └── wethinkcode
+│   │   │           └── healthsafe
+│   │   │               ├── IngestionServiceApp.java
+│   │   │               ├── Ward.java
+│   │   │               └── healthsafe.iml
+│   │   └── resources
+│   │       └── wards-outdated.csv
 ```
 
 ## Build

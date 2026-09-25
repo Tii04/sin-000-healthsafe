@@ -15,11 +15,23 @@ REST: called by `staffing-service` (`../staffing-service`) and `alert-level-serv
 
 ```
 ward-service/
+├── README.md
+├── dependency-reduced-pom.xml
 ├── pom.xml
-└── src/main/java/co/wethinkcode/healthsafe/
-    ├── WardServiceApp.java
-    └── mq/
-        └── MqConfig.java
+├── src
+│   └── main
+│       └── java
+│           └── co
+│               └── wethinkcode
+│                   └── healthsafe
+│                       ├── EquipmentFailure.java
+│                       ├── StaffingSchedule.java
+│                       ├── Ward.java
+│                       ├── WardServiceApp.java
+│                       └── mq
+│                           ├── EquipmentFailurePublisher.java
+│                           ├── MqConfig.java
+│                           └── StaffingEventSubscriber.java
 ```
 
 ## Build

@@ -34,11 +34,21 @@ The specification does not define a structure for the equipment failure alert. T
 
 ```
 equipment-alert-service/
+├── README.md
+├── dependency-reduced-pom.xml
 ├── pom.xml
-└── src/main/java/co/wethinkcode/healthsafe/
-    ├── EquipmentAlertServiceApp.java
-    └── mq/
-        └── MqConfig.java
+├── src
+│   └── main
+│       └── java
+│           └── co
+│               └── wethinkcode
+│                   └── healthsafe
+│                       ├── EquipmentAlertServiceApp.java
+│                       ├── EquipmentFailure.java
+│                       └── mq
+│                           ├── EquipmentFailureConsumer.java
+│                           ├── EquipmentFailurePublisher.java
+│                           └── MqConfig.java
 ```
 
 ## Build

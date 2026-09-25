@@ -15,8 +15,18 @@ in the root README for the endpoint shapes.
 
 ```
 alert-level-service/
+.
+├── README.md
+├── dependency-reduced-pom.xml
 ├── pom.xml
-└── src/main/java/co/wethinkcode/healthsafe/AlertLevelServiceApp.java
+├── src
+│   └── main
+│       └── java
+│           └── co
+│               └── wethinkcode
+│                   └── healthsafe
+│                       ├── AlertLevel.java
+│                       └── AlertLevelServiceApp.java
 ```
 
 ## Build
