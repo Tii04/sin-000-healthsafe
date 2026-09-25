@@ -25,6 +25,11 @@ exactly one consumer and processed at least once, even if this service is briefl
 down — unlike the broadcast `staffing-events-topic` in [`../common/`](../common),
 where every subscriber gets every message.
 
+## Assumptions/ Tradeoffs
+#### Equipment Failure Event Assumption
+The specification does not define a structure for the equipment failure alert. Therefore, the following structure is assumed for the equipment failure event: the ward ID, the equipment associated with the failure, the current status of the equipment, the type of failure, and the timestamp indicating when the failure occurred.
+
+
 ## Project structure
 
 ```
