@@ -35,18 +35,4 @@ public class StaffingEventPublisher{
         producer.send(message);
 
     }
-
-    public static void main(String[] args) throws Exception{
-        StaffingEventPublisher publisher = new StaffingEventPublisher();
-
-        StaffingSchedule schedule = new StaffingSchedule(
-            "W-01",
-            "Cardiology",
-            8,
-            2
-        );
-
-        publisher.publish(schedule);
-        System.out.println("Staffing event published.");
-    }
 }
