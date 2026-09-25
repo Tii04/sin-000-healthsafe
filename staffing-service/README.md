@@ -14,8 +14,13 @@ REST: calls `ward-service` (`../ward-service`) to validate the ward and
 Status before computing a schedule — see [Integration contracts](../README.md#integration-contracts)
 in the root README for the endpoint shapes.
 
-## Assumption Decisions
+## Assumption / Tradeoffs
 The specification does not define the staffing calculation. Therefore, this implementation assumes that the number of doctors required increases with the emergency level: levels 0-2 require one doctor, 3-5 two, 6-7 three and level 8 requires four.
+
+#### Staffing Schedule Updates
+The publication of staffing schedule events is triggered when the /staffing/{id} endpoint is called. When a request is received, the Staffing Service retrieves the current alert level, recalculates the staffing schedule, and compares it with the previously recorded schedule. An event is published to the ActiveMQ topic only if the schedule has changed, or if no previous schedule exists for that ward.
+
+The trade-off is that schedule changes are not detected or published immediately when the underlying alert level changes. Instead, changes are detected the next time the relevant staffing endpoint is called. This approach avoids the additional complexity of scheduled polling or event-driven notifications from the Alert Level Service, at the cost of potentially delayed schedule updates.
 
 ## Project structure
 
